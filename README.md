@@ -123,15 +123,3 @@ streamlit run app.py
 - Stream responses for a better user experience.
 
 ---
-
-## Contributing
-Contributions are welcome! Feel free to submit issues or pull requests on [GitHub](https://github.com/eric157/Versatile-AI-Assistant).
-
----
-
-## Contact
-For any questions, reach out via GitHub Issues.
-
----
-
-🚀 **Enjoy your AI-powered assistant!**
