@@ -1,85 +1,138 @@
 # Versatile AI Assistant
 
-This is a versatile AI assistant built using Streamlit, Langchain, and Ollama. It provides a user-friendly interface for interacting with a large language model (LLM), allowing you to customize the system prompt and adjust the temperature. The app features streaming responses and displays the response time for each query.
-
----
+A versatile AI assistant built using **Streamlit, Langchain, and Ollama**. This app provides a user-friendly interface for interacting with a large language model (LLM), allowing you to customize the system prompt, adjust the temperature, and manage chat sessions efficiently.
 
 ## Features
 
-- **Customizable System Prompt**: Set the initial instructions for the LLM to tailor its behavior.
-- **Adjustable Temperature Control**: Control the randomness of the AI's responses using the temperature slider.
-- **Streaming Responses**: Receive real-time feedback as the AI generates its response.
-- **Response Time Display**: View the time taken to generate each response.
-- **User-Friendly Chat Interface**: Interact with the AI through an intuitive chat interface.
+### 🔹 **LLM Model Support**
+- Choose from various models: `deepseek-r1:1.5b`, `phi3`, `gemma2:2b`, and `stable-code`, each offering unique strengths.
+
+### 🎭 **Customization Options**
+- **Customizable System Prompt**: Tailor AI behavior with predefined instructions.
+- **Adjustable Temperature Control**: Modify randomness using a temperature slider.
+- **Response Length & Style**: Choose response length and style preferences.
+- **AI Persona Selection**: Define the AI's personality (e.g., Friendly, Professional, Humorous).
+
+### 💬 **Chat Interaction**
+- **Streaming Responses**: Get real-time AI-generated responses with token count visibility.
+- **Response Time Display**: View the time taken to generate responses.
+- **Regenerate Response**: Easily request a new response for the last query.
+- **User-Friendly Interface**: Enjoy a smooth chat experience with AI and user avatars.
+
+### 📂 **Session & Data Management**
+- **Chat Session Management**: Create, switch, rename, and delete chat sessions.
+- **Quick Prompts**: Use preset prompts to start conversations effortlessly.
+- **Response Speed Indicator**: Monitor AI response speed via a progress bar.
+- **Feedback Mechanism**: Rate responses as Good, Neutral, or Bad.
+- **Chat Export**: Save chat history as a text file.
 
 ---
 
-## Installation
+## Installation Guide
 
-Follow these steps to set up and run the Versatile AI Assistant:
+### 1️⃣ **Clone the Repository**
+```bash
+git clone https://github.com/eric157/Versatile-AI-Assistant.git
+cd Versatile-AI-Assistant
+```
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/eric157/Versatile-AI-Assistant.git
-   cd Versatile-AI-Assistant
-   ```
+### 2️⃣ **Install Ollama**
+- Follow the instructions on the [Ollama website](https://ollama.ai) to install Ollama.
 
-2. **Install Ollama**:
-   - Follow the instructions on the [Ollama-website](https://ollama.com/) to install Ollama.
+### 3️⃣ **Download Required Models**
+```bash
+ollama run deepseek-r1:1.5b
+ollama run phi3
+ollama run gemma2:2b
+ollama run stable-code
+```
+- Verify downloaded models:
+```bash
+ollama list
+```
 
-3. **Download the Model**:
-   - After installing Ollama, download the required model using the following command:
-     ```bash
-     ollama pull deepseek-r1:1.5b
-     ```
+### 4️⃣ **Run the Model Server**
+Start the Ollama model server in the background:
+```bash
+ollama run deepseek-r1:1.5b
+```
+*(Leave this terminal running to keep the Ollama server active.)*
 
-4. **Run the Model**:
-   - Start the Ollama model server in the background:
-     ```bash
-     ollama run deepseek-r1:1.5b
-     ```
-   - Leave this terminal running to keep the Ollama server active.
+### 5️⃣ **Install Project Dependencies**
+```bash
+pip install -r requirements.txt
+```
 
-5. **Install Project Dependencies**:
-   - Install the required Python packages:
-     ```bash
-     pip install -r requirements.txt
-     ```
-
-6. **Run the Streamlit App**:
-   - Start the Streamlit application:
-     ```bash
-     streamlit run app.py
-     ```
+### 6️⃣ **Run the Streamlit App**
+```bash
+streamlit run app.py
+```
 
 ---
 
 ## Usage
 
-1. **System Prompt**:
-   - Customize the AI's behavior by entering a system prompt in the sidebar. This sets the initial instructions for the LLM.
+### 📌 **Model Selection**
+- Select an LLM model from the sidebar dropdown.
 
-2. **Temperature**:
-   - Adjust the temperature slider to control the randomness of the AI's responses. Lower temperatures result in more predictable outputs, while higher temperatures lead to more creative responses.
+### 🎭 **System Prompt Customization**
+- Choose AI response length, style, and persona using the sidebar options.
 
-3. **Chat Input**:
-   - Enter your query in the chat input box and press **Enter**.
+### 🔥 **Temperature Control**
+- Adjust the temperature slider to control response randomness.
 
-4. **Streaming Responses**:
-   - The AI's response will stream in real-time, providing immediate feedback.
+### 📁 **Chat Session Management**
+- Create, switch, rename, and delete chat sessions via the sidebar.
 
-5. **Response Time**:
-   - The time taken to generate the response is displayed below the chat message.
+### ⚡ **Quick Prompts**
+- Start conversations using predefined prompts.
+
+### 💬 **Chat Input & Responses**
+- Enter queries in the chat input box and press **Enter**.
+- Responses stream in real time, displaying token counts.
+
+### ⏳ **Response Time & Speed Indicator**
+- View response time below messages.
+- Monitor speed using the progress bar.
+
+### 🔄 **Regenerate Response**
+- Click "Regenerate Response" to get a new AI response.
+
+### 👍 **Feedback Mechanism**
+- Rate AI responses via the sidebar feedback options.
+
+### 📤 **Chat Export**
+- Click "Export Chat" to save conversation logs as a text file.
 
 ---
 
 ## Troubleshooting
 
-- **Ollama Server**:
-  - Ensure the Ollama server is running and the model is loaded before starting the Streamlit app. The app communicates with Ollama at `http://localhost:11434` by default. If you've changed the Ollama port, update the `ollama_base_url` variable in `app.py`.
+### 🛠 **Ollama Server Issues**
+- Ensure the Ollama server is running with the selected model loaded.
+- The app communicates with Ollama at `http://localhost:11434` by default.
+- If the port is changed, update the `ollama_base_url` variable in `app.py`.
 
-- **Model Availability**:
-  - Confirm that the `deepseek-r1:1.5b` model has been successfully downloaded and is available to Ollama. Use `ollama list` to see available models.
+### 📌 **Model Availability**
+- Run `ollama list` to verify installed models.
 
-- **Error Messages**:
-  - Pay attention to any error messages displayed in the Streamlit app or the Ollama server console. These messages can provide valuable clues for debugging.
+### ⚠ **Error Messages**
+- Check the Streamlit app and Ollama server console for debugging hints.
+
+### 🔄 **Performance Optimizations**
+- Utilize `@st.cache_resource` for efficient caching of LLM instances.
+- Stream responses for a better user experience.
+
+---
+
+## Contributing
+Contributions are welcome! Feel free to submit issues or pull requests on [GitHub](https://github.com/eric157/Versatile-AI-Assistant).
+
+---
+
+## Contact
+For any questions, reach out via GitHub Issues.
+
+---
+
+🚀 **Enjoy your AI-powered assistant!**
