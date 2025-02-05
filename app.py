@@ -65,6 +65,9 @@ if "user_query" not in st.session_state:
     st.session_state.user_query = ""
 if "session_names" not in st.session_state:
     st.session_state.session_names = {0: "Session 0"}
+if "feedback_log" not in st.session_state:
+    st.session_state.feedback_log = {}
+
 
 # App Title
 st.title("Versatile AI Assistant")
@@ -79,7 +82,8 @@ available_models = {
     "deepseek-r1:1.5b": {"logo": "deepseek.png", "speciality": "Code focused LLM, good for software development and understanding"},
     "phi3": {"logo": "microsoft.png", "speciality": "Excellent general knowledge and reasoning capabilities, good at mathematics"},
     "gemma2:2b": {"logo": "gemma.png", "speciality": "Lightweight general-purpose model, good at following instructions and creative content generation"},
-    "stable-code": {"logo": "stability-ai.png", "speciality": "Optimized for code generation, great at complex software engineering tasks"}
+    "stable-code": {"logo": "stability-ai.png", "speciality": "Optimized for code generation, great at complex software engineering tasks"},
+    "llama3": {"logo": "meta.png", "speciality": "A powerful all around language model capable of many different tasks, with a good understanding of complex instruction"}
 }
 
 selected_model = st.sidebar.selectbox("Model", list(available_models.keys()), index=0)
@@ -123,10 +127,6 @@ ollama_base_url = "http://localhost:11434"
 llm_engine = get_llm_engine(selected_model, ollama_base_url, temperature)
 if llm_engine is None:
     st.stop()
-
-# System Prompt
-system_prompt_text = f"You are a helpful and informative AI assistant with a {response_style} style. You respond with a {response_length} length. You should act {ai_persona}."
-system_prompt = SystemMessagePromptTemplate.from_template(system_prompt_text)
 
 # Chat Session Management
 def switch_chat_session(session_id):
@@ -230,11 +230,34 @@ async def generate_ai_response(prompt_chain):
     end_time = time.time()
     return ai_response, end_time - start_time
 
+# Function to analyze feedback and modify system prompt
+def analyze_feedback_and_update_prompt():
+    feedback_summary = ""
+    if st.session_state.feedback_log and len(st.session_state.feedback_log) > 0:
+        good_count = sum(1 for feedback in st.session_state.feedback_log.values() if feedback == "Good")
+        bad_count = sum(1 for feedback in st.session_state.feedback_log.values() if feedback == "Bad")
+        neutral_count = sum(1 for feedback in st.session_state.feedback_log.values() if feedback == "Neutral")
+        
+        if good_count > bad_count and good_count > neutral_count:
+            feedback_summary = "You have received good feedback in past conversations, keep doing the same."
+        elif bad_count > good_count:
+            feedback_summary = "You have received bad feedback in past conversations, analyze this feedback and change your approach."
+        elif neutral_count > good_count and neutral_count > bad_count:
+          feedback_summary = "You have received mostly neutral feedback, try and improve your engagement."
+        else:
+            feedback_summary = "The feedback is mixed, be mindful of all possible responses."
+    else:
+         feedback_summary = "No feedback received so far."
+    
+    updated_system_prompt_text = f"You are a helpful and informative AI assistant with a {response_style} style. You respond with a {response_length} length. You should act {ai_persona}. {feedback_summary}"
+    return SystemMessagePromptTemplate.from_template(updated_system_prompt_text)
 
 if user_query:
     st.session_state.message_log.append({"role": "user", "content": user_query, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
     with st.chat_message("ai", avatar=get_avatar_for_role("ai")):
+        # Update System Prompt with Feedback Analysis
+        system_prompt = analyze_feedback_and_update_prompt()
         prompt_chain = build_prompt_chain()
         ai_response, response_time = asyncio.run(generate_ai_response(prompt_chain))
 
@@ -252,7 +275,16 @@ if user_query:
 # Feedback Mechanism
 feedback = st.sidebar.radio("How was the response?", ("Good", "Neutral", "Bad"))
 if feedback:
+    # Get the last ai message ID so that you can record the feedback
+    last_ai_message_index = -1
+    for i, msg in enumerate(st.session_state.message_log):
+        if msg["role"] == "ai":
+            last_ai_message_index = i
+            
+    if last_ai_message_index >= 0:
+        st.session_state.feedback_log[last_ai_message_index] = feedback
     st.sidebar.write(f"Thank you for your feedback! You rated the response as: {feedback}")
+
 
 # Response Speed Indicator
 response_speed = st.sidebar.progress(0)
